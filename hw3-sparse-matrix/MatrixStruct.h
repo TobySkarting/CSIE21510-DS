@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//#define row COLUMN
-//#define col ROW
 #define MAX 100
 
 typedef struct {
@@ -28,12 +26,12 @@ void transposeMatrix(sparse a[], sparse b[]); /* 將a矩陣轉置並放到b矩陣結構*/
 
 int COMPARE(int a, int b); /*  比較前後項大小. */
 
-void storesum(sparse d[], int *totald, int row, int column, int *sum);
+void storeSum(sparse d[], int *totald, int row, int column, int *sum);
 /* 在乘法內的function，將row i 及column j 乘完的值存起來 */
 
 void printMatrix(sparse matrix[]);  /* 印出普通矩陣 */
 
-void mutiply(sparse a[], sparse b[], sparse d[]); /* 矩陣相乘. */
+void multiply(sparse a[], sparse b[], sparse d[]); /* 矩陣相乘. */
 
 
 #endif /* MATRIXSTRUCT_H_ */

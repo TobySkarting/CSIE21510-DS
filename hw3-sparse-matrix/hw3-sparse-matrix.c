@@ -10,6 +10,7 @@ int main()
 
 	sparse A[MAX];
 	sparse B[MAX] = { 0 };
+	sparse C[MAX] = { 0 };
 
 	createSparseA(A);
 	printSparseMatrix(A);
@@ -30,6 +31,10 @@ int main()
 			}
 		}
 		printSparseMatrix(B);
+		printf("end\n");
+
+		multiply(A, B, C);
+		printSparseMatrix(C);
 		printf("end\n");
 	}
     return 0;
