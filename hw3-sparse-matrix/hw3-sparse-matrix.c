@@ -1,42 +1,39 @@
-// hw3-sparse-matrix.cpp : Defines the entry point for the console application.
-//
-
-#include "MatrixStruct.h"
+#include <stdio.h>
+#include "matrixStruct.h"
 
 int main()
 {
 	int columns, elements;
-	int i;
+	int i, e;
 
 	sparse A[MAX];
 	sparse B[MAX] = { 0 };
 	sparse C[MAX] = { 0 };
+	s_header *headerB = &B[0];
 
 	createSparseA(A);
 	printSparseMatrix(A);
-	printf("Enter columns and non-zero elements count of the second matrix, then B.\n");
-	while (!!scanf("%d%d", &columns, &elements))
-	{
-		int r, c, v, e;
-		sparse *header = &B[0];
-		header->col = columns;
-		while (!!scanf("%d", &e))
-		{
-			header->row++;
-			makeSparseMatrix(B, header->row - 1, 0, e);
-			for (int i = 1; i < columns; i++)
-			{
-				scanf("%d", &e);
-				makeSparseMatrix(B, header->row - 1, i, e);
-			}
-		}
-		printSparseMatrix(B);
-		printf("end\n");
+	printf("輸入第二個陣列的Column及非零元素，再來輸入B的矩陣\n");
+	scanf("%d%d", &columns, &elements);
 
-		multiply(A, B, C);
-		printSparseMatrix(C);
-		printf("end\n");
+	headerB->cols = columns;
+	while (1 == scanf("%d", &e))
+	{
+		headerB->rows++;
+		makeSparseMatrix(B, headerB->rows - 1, 0, e);
+		for (i = 1; i < columns; i++)
+		{
+			scanf("%d", &e);
+			makeSparseMatrix(B, headerB->rows - 1, i, e);
+		}
 	}
+
+	printf("\nRow Col Value\n");
+	printSparseMatrix(B);
+		
+	printf("\nA * B 結果為\n");
+	multiply(A, B, C);
+	printMatrix(C);
+	
     return 0;
 }
-

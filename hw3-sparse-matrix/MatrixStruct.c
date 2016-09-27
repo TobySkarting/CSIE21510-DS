@@ -3,10 +3,10 @@
 
 void createSparseA(sparse a[])
 {
-	sparse *header = &a[0];
-	header->col = 3;
-	header->row = 3;
-	header->value = 0;
+	s_header *header = &a[0];
+	header->cols = 3;
+	header->rows = 3;
+	header->terms = 0;
 	makeSparseMatrix(a, 0, 0, 1);
 	makeSparseMatrix(a, 1, 0, 1);
 	makeSparseMatrix(a, 2, 0, 1);
@@ -14,8 +14,9 @@ void createSparseA(sparse a[])
 
 void printSparseMatrix(sparse matrix[])
 {
-	sparse *header = &matrix[0];
-	for (int i = 0; i < header->value + 1; i++)
+	int i;
+	const s_header *header = &matrix[0];
+	for (i = 0; i < header->terms + 1; i++)
 		printf("%d %d %d\n", matrix[i].row, matrix[i].col, matrix[i].value);
 }
 
@@ -31,59 +32,60 @@ void makeSparseMatrix(sparse matrix[], int row, int col, int element)
 
 void transposeMatrix(sparse a[], sparse b[])
 {
-	sparse *header = &a[0];
-	int *rowSize = (int *)malloc(a->col * sizeof(int));
-	int *rowStart = (int *)malloc(a->col * sizeof(int));
-	memset(rowSize, 0, a->col * sizeof(int));
-	for (int i = 0; i < header->value; i++)
-		rowSize[a[i + 1].col]++;
-	rowStart[0] = 0;
-	for (int i = 1; i < header->col; i++)
-		rowStart[i] = rowStart[i - 1] + rowSize[i - 1];
-	b[0].row = a[0].col;
-	b[0].col = a[0].row;
-	b[0].value = a[0].value;
-	for (int i = 0; i < header->value; i++)
-	{
-		int j = rowStart[a[i + 1].col];
-		b[j + 1].row = a[i + 1].col;
-		b[j + 1].col = a[i + 1].row;
-		b[j + 1].value = a[i + 1].value;
-		rowStart[a[i + 1].col]++;
-	}
-	free(rowSize);
-	free(rowStart);
-}
+	int rowSize[MAX];
+	int rowStart[MAX];
+	int i, j;
+	const s_header *headerA = (s_header *)&a[0];
+	s_header *headerB = (s_header *)&b[0];
 
-int COMPARE(int a, int b)
-{
-	return 0;
+	headerB->rows = headerA->cols;
+	headerB->cols = headerA->rows;
+	headerB->terms = headerA->terms;
+	if (headerA->terms > 0)
+	{
+		for (i = 0; i < headerA->cols; i++)
+			rowSize[i] = 0;
+		for (i = 1; i < headerA->terms; i++)
+			rowSize[a[i].col]++;
+		rowStart[0] = 1;
+		for (i = 1; i < headerA->cols; i++)
+			rowStart[i] = rowStart[i - 1] + rowSize[i - 1];
+		for (i = 1; i <= headerA->terms; i++)
+		{
+			j = rowStart[a[i].col];
+			b[j].row = a[i].col;
+			b[j].col = a[i].row;
+			b[j].value = a[i].value;
+			rowStart[a[i].col]++;
+		}
+	}
 }
 
 void storeSum(sparse d[], int * totald, int row, int column, int * sum)
 {
-	sparse *header = &d[0];
 	if (*sum != 0)
 	{
-		d[header->value].row = row;
-		d[header->value].col = column;
-		d[header->value++].value = *sum;
+		d[++*totald].row = row;
+		d[*totald].col = column;
+		d[*totald].value = *sum;
+		*sum = 0;
 	}
 }
 
 void printMatrix(sparse matrix[])
 {
-	sparse *header = &matrix[0];
-	int *tmpMatrix = (int *)malloc(header->col * header->row * sizeof(int));
-	memset(tmpMatrix, 0, header->col * header->row * sizeof(int));
+	const s_header *header = &matrix[0];
+	int i, j;
+	int *tmpMatrix = (int *)malloc(header->cols * header->rows * sizeof(int));
+	memset(tmpMatrix, 0, header->cols * header->rows * sizeof(int));
 
-	for (int i = 1; i <= header->value; i++)
-		tmpMatrix[matrix[i].row * header->col + matrix[i].col] = matrix[i].value;
+	for (i = 1; i <= header->terms; i++)
+		tmpMatrix[matrix[i].row * header->cols + matrix[i].col] = matrix[i].value;
 
-	for (int i = 0; i < header->row; i++)
+	for (i = 0; i < header->rows; i++)
 	{
-		for (int j = 0; j < header->col; j++)
-			printf("%d ", tmpMatrix[i * header->col + j]);
+		for (j = 0; j < header->cols; j++)
+			printf("%d ", tmpMatrix[i * header->cols + j]);
 		printf("\n");
 	}
 
@@ -92,59 +94,61 @@ void printMatrix(sparse matrix[])
 
 void multiply(sparse a[], sparse b[], sparse d[])
 {
+	int currRowIndex, currRowBegin = 1, currRowA = a[1].row;
+	int currColB, currColIndex;
+	int sum = 0;
+	sparse bX[MAX];
+	const s_header *headerA = &a[0];
+	const s_header *headerB = &b[0];
+	s_header *headerD = &d[0];
 	if (a[0].col != b[0].row)
 	{
 		printf("Incompatible matrices.\n");
 		return;
 	}
-	sparse bX[MAX];
 	transposeMatrix(b, bX);
-	int currRowIndex = 0, currRowBegin = 0, currRowA = a[0].row;
 
-	d[0].row = a[0].row;
-	d[0].col = b[0].col;
-	d[0].value = 0;
+	headerD->rows = headerA->rows;
+	headerD->cols = headerB->cols;
+	headerD->terms = 0;
 
-	a[a[0].value + 1].row = a[0].row;
-	bX[b[0].value + 1].row = b[0].col;
-	bX[b[0].value + 1].col = -1;
-	int sum = 0;
-	while (currRowIndex < a[0].value)
+	a[headerA->terms + 1].row = headerA->rows;
+	bX[headerB->terms + 1].row = headerB->cols;
+	bX[headerB->terms + 1].col = -1;
+	
+	currRowIndex = 1;
+	while (currRowIndex <= headerA->terms)
 	{
-		int currColB = bX[1].row;
-		int currColIndex = 0;
-		while (currColIndex <= b[0].value)
+		currColB = bX[1].row;
+		currColIndex = 1;
+		while (currColIndex <= headerB->terms + 1)
 		{
-			if (a[currRowIndex + 1].row != currRowA)
+			if (a[currRowIndex].row != currRowA)
 			{
-				storeSum(d, NULL, currRowA, currColB, &sum);
-				sum = 0;
+				storeSum(d, &headerD->terms, currRowA, currColB, &sum);
 				currRowIndex = currRowBegin;
-				while (bX[currColIndex + 1].row == currColB)
+				while (bX[currColIndex].row == currColB)
 					currColIndex++;
-				currColB = bX[currColIndex + 1].row;
+				currColB = bX[currColIndex].row;
 			}
-			else if (bX[currColIndex + 1].row != currColB)
+			else if (bX[currColIndex].row != currColB)
 			{
-				storeSum(d, NULL, currRowA, currColB, &sum);
-				sum = 0;
+				storeSum(d, &headerD->terms, currRowA, currColB, &sum);
 				currRowIndex = currRowBegin;
-				currColB = bX[currColIndex + 1].row;
+				currColB = bX[currColIndex].row;
 			}
-			else if (a[currRowIndex + 1].col < bX[currColIndex + 1].col)
+			else if (a[currRowIndex].col < bX[currColIndex].col)
 				currRowIndex++;
-			else if (a[currRowIndex + 1].col == bX[currColIndex + 1].col)
+			else if (a[currRowIndex].col == bX[currColIndex].col)
 			{
-				sum += a[currRowIndex + 1].value * bX[currColIndex + 1].value;
-				currRowIndex++;
-				currColIndex++;
+				sum += a[currRowIndex++].value * bX[currColIndex++].value;
 			}
 			else
 				currColIndex++;
 		}
-		while (a[currRowIndex + 1].row == currRowA)
+		while (a[currRowIndex].row == currRowA)
 			currRowIndex++;
 		currRowBegin = currRowIndex;
-		currRowA = a[currRowIndex + 1].row;
+		currRowA = a[currRowIndex].row;
 	}
 }
