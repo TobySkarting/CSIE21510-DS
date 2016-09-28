@@ -1,9 +1,11 @@
 #include "MatrixStruct.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void createSparseA(sparse a[])
 {
-	s_header *header = &a[0];
+	s_header *header = (s_header *)&a[0];
 	header->cols = 3;
 	header->rows = 3;
 	header->terms = 0;
@@ -15,7 +17,7 @@ void createSparseA(sparse a[])
 void printSparseMatrix(sparse matrix[])
 {
 	int i;
-	const s_header *header = &matrix[0];
+	const s_header *header = (s_header *)&matrix[0];
 	for (i = 0; i < header->terms + 1; i++)
 		printf("%d %d %d\n", matrix[i].row, matrix[i].col, matrix[i].value);
 }
@@ -41,6 +43,7 @@ void transposeMatrix(sparse a[], sparse b[])
 	headerB->rows = headerA->cols;
 	headerB->cols = headerA->rows;
 	headerB->terms = headerA->terms;
+
 	if (headerA->terms > 0)
 	{
 		for (i = 0; i < headerA->cols; i++)
@@ -74,7 +77,7 @@ void storeSum(sparse d[], int * totald, int row, int column, int * sum)
 
 void printMatrix(sparse matrix[])
 {
-	const s_header *header = &matrix[0];
+	const s_header *header = (s_header *)&matrix[0];
 	int i, j;
 	int *tmpMatrix = (int *)malloc(header->cols * header->rows * sizeof(int));
 	memset(tmpMatrix, 0, header->cols * header->rows * sizeof(int));
@@ -98,9 +101,9 @@ void multiply(sparse a[], sparse b[], sparse d[])
 	int currColB, currColIndex;
 	int sum = 0;
 	sparse bX[MAX];
-	const s_header *headerA = &a[0];
-	const s_header *headerB = &b[0];
-	s_header *headerD = &d[0];
+	const s_header *headerA = (s_header *)&a[0];
+	const s_header *headerB = (s_header *)&b[0];
+	s_header *headerD = (s_header *)&d[0];
 	if (a[0].col != b[0].row)
 	{
 		printf("Incompatible matrices.\n");

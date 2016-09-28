@@ -9,7 +9,7 @@ int main()
 	sparse A[MAX];
 	sparse B[MAX] = { 0 };
 	sparse C[MAX] = { 0 };
-	s_header *headerB = &B[0];
+	s_header *headerB = (s_header *)&B[0];
 
 	createSparseA(A);
 	printSparseMatrix(A);

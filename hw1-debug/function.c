@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "function.h"
 
 void prn_2time_var(int var)
