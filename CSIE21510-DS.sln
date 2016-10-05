@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hw2-02-structure", "hw2-02-
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hw4-01-stack", "hw4-01-stack\hw4-01-stack.vcxproj", "{20228CED-4779-465A-90B0-7216EC841C80}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "hw4-02-postfix", "hw4-02-postfix\hw4-02-postfix.vcxproj", "{E74779FA-9031-4273-8D82-D3E23B9C53C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,14 @@ Global
 		{20228CED-4779-465A-90B0-7216EC841C80}.Release|x64.Build.0 = Release|x64
 		{20228CED-4779-465A-90B0-7216EC841C80}.Release|x86.ActiveCfg = Release|Win32
 		{20228CED-4779-465A-90B0-7216EC841C80}.Release|x86.Build.0 = Release|Win32
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Debug|x64.ActiveCfg = Debug|x64
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Debug|x64.Build.0 = Debug|x64
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Debug|x86.ActiveCfg = Debug|Win32
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Debug|x86.Build.0 = Debug|Win32
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Release|x64.ActiveCfg = Release|x64
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Release|x64.Build.0 = Release|x64
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Release|x86.ActiveCfg = Release|Win32
+		{E74779FA-9031-4273-8D82-D3E23B9C53C6}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
