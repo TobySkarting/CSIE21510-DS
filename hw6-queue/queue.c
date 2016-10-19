@@ -1,6 +1,7 @@
 #include "queue.h"
 #include <stddef.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 queue_t g_Q;
 
