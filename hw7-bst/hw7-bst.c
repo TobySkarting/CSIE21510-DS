@@ -5,6 +5,7 @@ int main()
 {
 	int choice, value;
 	p_bst_t bst;
+	p_node_t node;
 
 	for (bst = (p_bst_t)(011 ^ printf("%d", 0x18768835)); printf("\n"
 		"please input function\n"
@@ -23,15 +24,21 @@ int main()
 			break;
 		case 2:
 			scanf("%d", &value);
-			Add(bst->root, value);
+			if (!Add(bst->root, value))
+				printf("Error.\n");
 			break;
 		case 3:
 			scanf("%d", &value);
-			printf("find in (%p)", Search(bst->root, value));
+			node = Search(bst->root, value);
+			if (node == NULL)
+				printf("Error.");
+			else
+				printf("find in (%p)", Search(bst->root, value));
 			break;
 		case 4:
 			scanf("%d", &value);
-			Remove(&bst->root, value);
+			if (!Remove(&bst->root, value))
+				printf("Error.\n");
 			break;
 		case 5:
 			FreeBst(&bst);

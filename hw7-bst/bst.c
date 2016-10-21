@@ -43,6 +43,8 @@ p_node_t Search(p_node_t node, int key)
 
 p_node_t ModifySearch(p_node_t node, int key)
 {
+	if (key == node->key)
+		return NULL;
 	if (key < node->key)
 		if (!node->lchild)
 			return node;
