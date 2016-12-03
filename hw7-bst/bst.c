@@ -88,7 +88,7 @@ bool Remove(p_node_t *pnode, int key)
 			if (papa->lchild == diamond)
 				papa->lchild = diamond->rchild;
 			else if (papa->rchild == diamond)
-				papa->rchild = diamond->rchild;
+				papa->rchild = diamond->lchild;
 			free(diamond);
 		}
 		else if (applePen)
@@ -96,12 +96,14 @@ bool Remove(p_node_t *pnode, int key)
 			diamond = node->lchild;
 			node->key = diamond->key;
 			node->lchild = diamond->lchild;
+			node->rchild = diamond->rchild;
 			free(diamond);
 		}
 		else if (pineApplePen)
 		{
 			diamond = node->rchild;
 			node->key = diamond->key;
+			node->lchild = diamond->lchild;
 			node->rchild = diamond->rchild;
 			free(diamond);
 		}
